@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
-import { EmployeesModule } from './employees.module';
+import {v4 as uuid} from "uuid";
 
 @Injectable()
 export class EmployeesService {
@@ -9,13 +9,13 @@ export class EmployeesService {
   // - - Base de datos SIMULADA
   private employees: CreateEmployeeDto[] = [
     {
-      id: 0,
+      id: uuid(),
       name: 'John ',
       lastName: 'Gutierrez',
       phoneNumber: '672562125'
     },
     {
-      id: 1,
+      id: uuid(),
       name: 'Jane Smith',
       lastName: 'Allen',
       phoneNumber: '987654321',
@@ -25,7 +25,7 @@ export class EmployeesService {
 
   // Metodos a utilizar en employees
   create(createEmployeeDto: CreateEmployeeDto) {
-    createEmployeeDto.id = this.employees.length;
+    createEmployeeDto.id = uuid() 
     this.employees.push(createEmployeeDto)
     return createEmployeeDto;
   }
@@ -34,31 +34,31 @@ export class EmployeesService {
     return this.employees;
   }
 
-  findOne(id: number) {
-    const employee = this.employees.filter((employee) => employee.id === id)
+  findOne(id: string) {
+    const employee = this.employees.filter((employee) => employee.id === id)[0];
+    if (!employee) throw new NotFoundException();
     return employee;
   }
 
-  update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
+  update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
     let employeeToUpdate = this.findOne(id);
 
     employeeToUpdate = {
       ...employeeToUpdate,
-      ...updateEmployeeDto
+      ...updateEmployeeDto,
     }
-
     this.employees = this.employees.map((employee) => {
       if(employee.id === id){
-        employee = employee;
+        employee = employeeToUpdate
       }
-       return employee
+      return employee
     })
     return employeeToUpdate
   }
 
-  remove(id: number) {
-      this.employees =  this.employees.filter((employee) => employee.id !== id)
-     
-      return this.employees
+  remove(id: string) {
+    this.findOne(id)
+    this.employees =  this.employees.filter((employee) => employee.id !== id)
+    return this.employees
   }
 }
