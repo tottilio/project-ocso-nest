@@ -36,7 +36,10 @@ export class EmployeesService {
 
   findOne(id: string) {
     const employee = this.employees.filter((employee) => employee.id === id)[0];
+    
+    // - - Lanzar error 4004 con NotFoundException(); - - 
     if (!employee) throw new NotFoundException();
+    
     return employee;
   }
 
