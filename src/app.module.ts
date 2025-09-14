@@ -6,7 +6,8 @@ import { EmployeesModule } from './employees/employees.module';
 import { ProductModule } from './product/product.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot({
+  imports: [
+    TypeOrmModule.forRoot({
     type: 'postgres',
     host: process.env.host,
     port: 5432,
