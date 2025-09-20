@@ -32,7 +32,11 @@ export class ProductService {
   }
 
   findByProvider(id: string) {
-    return "OK"
+    return this.productRepository.findBy({
+      provider: {
+        providerId: id
+      }
+    })
   }
 
   async update(id:string, updateProductDto: UpdateProductDto) {
