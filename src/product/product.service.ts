@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { v4 as uuid} from 'uuid'
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
@@ -33,11 +32,7 @@ export class ProductService {
   }
 
   findByProvider(id: string) {
-    const productFound = this.productRepository.findOneBy({
-      productId: id
-    })
-    if (!productFound) throw new NotFoundException()
-    return productFound
+    return "OK"
   }
 
   async update(id:string, updateProductDto: UpdateProductDto) {
