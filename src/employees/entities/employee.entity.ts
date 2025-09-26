@@ -5,20 +5,22 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn
 @Entity()
 export class Employee {
     @PrimaryGeneratedColumn("uuid")
-    id:string
+    employeeId:string
     @Column('text')
-    name:string
+    employeeName:string
     @Column('text')
-    lastName: string
+    employeeLastName: string
     @Column('text')
-    phoneNumber:string
-    @Column('text')
-    email: string
+    employeePhoneNumber:string
+    @Column('text', {
+        unique: true
+    })
+    employeeEmail: string
     @Column({
         type:'text',
         nullable: true
     })
-    photoUrl: string
+    employeePhoto: string
 
     @ManyToOne(() => Location, (location) => location.employees)
     @JoinColumn({

@@ -41,4 +41,14 @@ export class AuthService {
         const token = this.jwtService.sign(preload)
         return token
     }
+
+    async updateUser(userEmail:string ,updateUserDto: UpdateUserDto){
+        const newUserData = await this.userRepository.preload({
+            userEmail,
+            ...updateUserDto
+        })
+        if(!newUserData) throw new NotFoundException();
+        this.userRepository.save(newUserData)
+        return newUserData
+    }
 }

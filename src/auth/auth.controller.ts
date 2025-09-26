@@ -18,4 +18,9 @@ export class AuthController {
     return this.authService.loginUser(loginUserDto)
   }
 
+  @Patch("/:email")
+  updateUser(@Param('email') userEmail, @Body() updateuserDto :UpdateUserDto ){
+    return this.authService.updateUser(userEmail, updateuserDto)
+  }
+
 }
