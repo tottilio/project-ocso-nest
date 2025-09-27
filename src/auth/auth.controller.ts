@@ -3,13 +3,23 @@ import { AuthService } from './auth.service';
 import { CreateUserDTo } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-users.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { User } from './entities/user.entity';
 
 @ApiTags("Auth")
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
+  
+  @ApiResponse({
+    status: 201,
+    example:{ 
+      userEmail: "juan@correo.com",
+      userId: "UUID",
+      userPassword: "juanpass123",
+      userRoles: ["Employee"]
+    } as User
+  })
   @Post('singup')
   singup(@Body()createUserDto : CreateUserDTo){
     return this.authService.registerUser(createUserDto);

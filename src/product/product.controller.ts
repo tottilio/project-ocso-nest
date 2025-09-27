@@ -5,7 +5,8 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { ROLES } from 'src/auth/constants/roles.constants';
 import { ApiAuth } from 'src/auth/decorators/api.decorator';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Product } from './entities/product.entity';
 
 @ApiAuth()
 @ApiTags("Product")
@@ -14,6 +15,15 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Auth(ROLES.EMPLOYEE, ROLES.MANAGER)
+  @ApiResponse({
+    status: 201,
+    example: {
+      productId: "UUID",
+      productName: "Producto1",
+      productPrice: 18,
+      productSeal: 3,
+    } as Product
+  })
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);

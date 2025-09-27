@@ -26,7 +26,6 @@ export class EmployeesController {
       employeePhoto: "URL"
     } as Employee
   })
-  
   @Post()
   create(@Body() createEmployeeDto: CreateEmployeeDto) {
     return this.employeesService.create(createEmployeeDto);

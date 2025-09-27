@@ -1,22 +1,32 @@
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
 import { IsInt, IsNumber, IsObject, IsOptional, IsString, IsUUID, MaxLength } from "class-validator"
 import { Provider } from "src/providers/entities/provider.entity"
+import { Product } from "../entities/product.entity"
 
-export class CreateProductDto {
-
+export class CreateProductDto extends Product {
+    @ApiPropertyOptional({
+        default: "UUID"
+    })
     @IsUUID("4")
     @IsOptional()
-    productId:string
-
+    declare productId:string
+    @ApiProperty({
+        default: "Producto 1"
+    })
     @IsString()
     @MaxLength(40)  
-    productName:string
-
+    declare productName:string
+    @ApiProperty({
+        default: 18
+    })
     @IsNumber()
-    productPrice:number
-
+    declare productPrice:number
+    @ApiProperty({
+        default: 3
+    })
     @IsInt()
-    productSeal: number
-
+    declare productSeal: number
+    @ApiProperty()
     @IsObject()
-    provider: Provider
+    declare provider: Provider
 }
