@@ -1,4 +1,5 @@
-import { ArrayNotEmpty, IsArray, IsString, MaxLength } from "class-validator";
+import { ArrayNotEmpty, IsArray, IsObject, IsOptional, IsString, MaxLength } from "class-validator";
+import { Region } from "src/regions/entities/region.entity";
 
 export class CreateLocationDto {
     @IsString()
@@ -9,4 +10,7 @@ export class CreateLocationDto {
     locationAdress: string;
     @IsArray()
     locationLatLng: number[];
+    @IsObject()
+    @IsOptional()
+    region: Region;
 }

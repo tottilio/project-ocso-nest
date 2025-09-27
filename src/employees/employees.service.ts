@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
-import {v4 as uuid} from "uuid";
 import { InjectRepository } from '@nestjs/typeorm';
 import { Employee } from './entities/employee.entity';
 import { Repository } from 'typeorm';
@@ -26,16 +25,24 @@ export class EmployeesService {
 
   findOne(id: string) {
     const employee = this.employeeRepository.findOneBy({
-      id: id
+      employeeId: id
     })
     // - - Lanzar error 4004 con NotFoundException(); - - 
     if (!employee) throw new NotFoundException();
     return employee;
   }
 
+  findByLocation(id: number){
+    return this.employeeRepository.findBy({
+      location:{
+        locationId: id
+      }
+    })
+  }
+
   async update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
     const employeeToUpdate = await this.employeeRepository.preload({
-      id : id,
+      employeeId : id,
       ...updateEmployeeDto
     })
     this.employeeRepository.save(updateEmployeeDto)
@@ -44,7 +51,7 @@ export class EmployeesService {
 
   remove(id: string) {
     this.employeeRepository.delete({
-      id :id,
+      employeeId :id,
     })
     return {
       message: "Employee Eliminado"

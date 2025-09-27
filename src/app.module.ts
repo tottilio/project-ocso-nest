@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { EmployeesModule } from './employees/employees.module';
 import { ProductModule } from './product/product.module';
 import { ProvidersModule } from './providers/providers.module';
@@ -23,7 +21,7 @@ import { AuthModule } from './auth/auth.module';
     autoLoadEntities: true,
     synchronize: true,
   }), EmployeesModule, ProductModule, ProvidersModule, ManagersModule, LocationsModule, RegionsModule, AuthModule],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
