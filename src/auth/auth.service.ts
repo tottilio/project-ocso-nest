@@ -24,12 +24,13 @@ export class AuthService {
     }
 
     async loginUser( loginUserDto: LoginUserDto ){
+            console.log(loginUserDto);
         const user = await this.userRepository.findOne({
             where:{
                 userEmail: loginUserDto.userEmail
             }
         })
-        if(!user) throw new NotFoundException()
+        if(!user) throw new UnauthorizedException("No estas autorizado")
         // - -> Hasheo and Jtoken
         const match = await bcrypt.compare(loginUserDto.userPassword, user.userPassword)
         if(!match) throw new UnauthorizedException("No esta autorizado");
