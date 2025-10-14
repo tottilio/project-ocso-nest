@@ -45,8 +45,11 @@ export class ProvidersService {
   }
 
   remove(id: string) {
-    return this.providerRepository.delete({
+    this.providerRepository.delete({
       providerId: id
     })
+    return{
+      message : "Provider deleted"
+    }
   }
 }

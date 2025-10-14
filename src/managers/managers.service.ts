@@ -39,8 +39,11 @@ export class ManagersService {
   }
 
   remove(id: string) {
-    return this.managerRepository.delete({
+    this.managerRepository.delete({
       managerId: id
     })
+    return {
+      message : "Manager deleted"
+    }
   }
 }
