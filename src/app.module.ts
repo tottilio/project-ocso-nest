@@ -12,11 +12,14 @@ import { AuthModule } from './auth/auth.module';
   imports: [
     TypeOrmModule.forRoot({
     type: 'postgres',
-    host: process.env.host,
+    // host: process.env.host, --> Base docker
+    host: "192.168.3.22",
     port: 5432,
     username: 'postgres',
-    password: "LaMejorContraseña",
-    database: process.env.name ,
+    //password: "LaMejorContraseña", --> Base docker
+    password: "cePzag-pygxez-2nyrpo",
+    //database: process.env.name , --> Base docker
+    database: "tienda" ,
     entities: [],
     autoLoadEntities: true,
     synchronize: true,
