@@ -27,6 +27,6 @@ export class CreateProductDto extends Product {
     @IsInt()
     declare productSeal: number
     @ApiProperty()
-    @IsObject()
-    declare provider: Provider
+    @IsString()
+    declare provider: Provider | string
 }
