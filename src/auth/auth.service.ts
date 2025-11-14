@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDTo } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,61 +14,70 @@ import { Manager } from 'src/managers/entities/manager.entity';
 export class AuthService {
 
     constructor(
-        @InjectRepository(User) private userRepository: Repository <User>,
-        @InjectRepository(Employee) private employeeRepository: Repository <Employee>,
-        @InjectRepository(Manager) private managerRepository: Repository <Manager>,
+        @InjectRepository(User) private userRepository: Repository<User>,
+        @InjectRepository(Employee) private employeeRepository: Repository<Employee>,
+        @InjectRepository(Manager) private managerRepository: Repository<Manager>,
         private jwtService: JwtService
-    ){}
+    ) { }
 
 
-    async registerEmployee(id: string , createUserDto: CreateUserDTo){
+    async registerEmployee(id: string, createUserDto: CreateUserDTo) {
+        const roles = createUserDto.userRoles
+        if (roles.includes("Admin") || roles.includes("Manager")) {
+            throw new BadRequestException("Rol invalido")
+        }
         createUserDto.userPassword = bcrypt.hashSync(createUserDto.userPassword, 5)
         const user = await this.userRepository.save(createUserDto)
         const employee = await this.employeeRepository.preload({
             employeeId: id,
         })
-        if(!employee) throw new NotFoundException()
-        employee.user = user; 
+        if (!employee) throw new NotFoundException()
+            employee.user = user;
         return this.employeeRepository.save(employee)
     }
+    
+    async registerManager(id: string, createUserDto: CreateUserDTo) {
+        const roles = createUserDto.userRoles
+        if (roles.includes("Admin") || roles.includes("Employee")) {
+            throw new BadRequestException("Rol invalido")
+        }
 
-    async registerManager(id: string , createUserDto: CreateUserDTo){
         createUserDto.userPassword = bcrypt.hashSync(createUserDto.userPassword, 5)
         const user = await this.userRepository.save(createUserDto)
         const manager = await this.managerRepository.preload({
             managerId: id,
         })
-        if(!manager) throw new NotFoundException()
-        manager.user = user; 
+        if (!manager) throw new NotFoundException()
+        manager.user = user;
         return this.managerRepository.save(manager);
     }
 
-    async loginUser( loginUserDto: LoginUserDto ){
-            console.log(loginUserDto);
+    async loginUser(loginUserDto: LoginUserDto) {
+        console.log(loginUserDto);
         const user = await this.userRepository.findOne({
-            where:{
+            where: {
                 userEmail: loginUserDto.userEmail
             }
         })
-        if(!user) throw new UnauthorizedException("No estas autorizado")
+        if (!user) throw new UnauthorizedException("No estas autorizado")
         // - -> Hasheo and Jtoken
         const match = await bcrypt.compare(loginUserDto.userPassword, user.userPassword)
-        if(!match) throw new UnauthorizedException("No esta autorizado");
+        if (!match) throw new UnauthorizedException("No esta autorizado");
         const preload = {
-            userEmail : user.userEmail,
-            userPassword : user.userPassword,
+            userEmail: user.userEmail,
+            userPassword: user.userPassword,
             userRoles: user.userRoles
         }
         const token = this.jwtService.sign(preload)
         return token
     }
 
-    async updateUser(userEmail:string ,updateUserDto: UpdateUserDto){
+    async updateUser(userEmail: string, updateUserDto: UpdateUserDto) {
         const newUserData = await this.userRepository.preload({
             userEmail,
             ...updateUserDto
         })
-        if(!newUserData) throw new NotFoundException();
+        if (!newUserData) throw new NotFoundException();
         this.userRepository.save(newUserData)
         return newUserData
     }
