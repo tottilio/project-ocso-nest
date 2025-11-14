@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDTo } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -23,11 +23,18 @@ export class AuthController {
       userRoles: ["Employee"]
     } as User
   })
-  @Post('singup')
-  singup(@Body()createUserDto : CreateUserDTo){
-    return this.authService.registerUser(createUserDto);
+  @Post("register/employee/[id]")
+  registerEmployee(@Body()createUserDto : CreateUserDTo, @Param("id") id:string,){
+    if(createUserDto.userRoles.includes("Admin") || createUserDto.userRoles.includes("Manager")) throw new BadRequestException("Rol invalido")
+    return this.authService.registerEmployee(id, createUserDto);
   }
-
+  
+  @Post("register/manager")
+  registerManager(@Body()createUserDto : CreateUserDTo, @Param("id") id:string,){
+    if(createUserDto.userRoles.includes("Admin") || createUserDto.userRoles.includes("Employee")) throw new BadRequestException("Rol invalido")
+    return this.authService.registerManager(id, createUserDto);
+  }
+  
   @Post('login')
   async loginUser(@Body() loginUserDto : LoginUserDto, @Res({passthrough: true}) response:Response, @Cookies() cookies: any){
     const token = await this.authService.loginUser(loginUserDto);

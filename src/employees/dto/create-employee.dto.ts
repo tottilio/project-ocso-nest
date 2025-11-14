@@ -43,6 +43,6 @@ export class CreateEmployeeDto extends Employee {
         default: "location"
     })
     @IsOptional()
-    @IsObject()
-    declare location: Location
+    @IsString()
+    declare location: Location | string
 }

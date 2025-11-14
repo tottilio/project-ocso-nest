@@ -20,12 +20,21 @@ export class EmployeesService {
   }
 
   findAll() {
-    return this.employeeRepository.find();
+    return this.employeeRepository.find({
+      relations:{
+        location: true 
+      }
+    });
   }
 
   findOne(id: string) {
-    const employee = this.employeeRepository.findOneBy({
-      employeeId: id
+    const employee = this.employeeRepository.findOne({
+      where: {
+        employeeId:id
+      },
+      relations:{
+        location:true,
+      }
     })
     // - - Lanzar error 4004 con NotFoundException(); - - 
     if (!employee) throw new NotFoundException();
