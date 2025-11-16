@@ -19,7 +19,8 @@ export class ManagersService {
 
   findAll() {
     return this.managerRepository.find({relations: {
-      location: true
+      location: true,
+      user:true
     }});
   }
 
@@ -28,6 +29,7 @@ export class ManagersService {
       where:{managerId: id},
       relations: {
         location: true,
+        user: true,
       }
     })
     if(!manager) throw new NotFoundException()

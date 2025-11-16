@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { LoginUserDto } from './dto/login-users.dto';
 import { Employee } from 'src/employees/entities/employee.entity';
 import { Manager } from 'src/managers/entities/manager.entity';
+import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 
 @Injectable()
 export class AuthService {
@@ -32,10 +33,10 @@ export class AuthService {
             employeeId: id,
         })
         if (!employee) throw new NotFoundException()
-            employee.user = user;
+        employee.user = user;
         return this.employeeRepository.save(employee)
     }
-    
+
     async registerManager(id: string, createUserDto: CreateUserDTo) {
         const roles = createUserDto.userRoles
         if (roles.includes("Admin") || roles.includes("Employee")) {
@@ -72,9 +73,12 @@ export class AuthService {
         return token
     }
 
-    async updateUser(userEmail: string, updateUserDto: UpdateUserDto) {
+    async updateUser(id: string, updateUserDto: UpdateUserDto) {
+        if (updateUserDto.userPassword) {
+            updateUserDto.userPassword = bcrypt.hashSync(updateUserDto.userPassword, 5);
+        } 
         const newUserData = await this.userRepository.preload({
-            userEmail,
+            userId: id,
             ...updateUserDto
         })
         if (!newUserData) throw new NotFoundException();
